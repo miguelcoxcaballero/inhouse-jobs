@@ -1,0 +1,7 @@
+{
+  "version": "0.1.0",
+  "versionCode": 1,
+  "required": false,
+  "apkUrl": "https://github.com/miguelcoxcaballero/inhouse-jobs/releases/latest/download/Inhouse-Jobs.apk",
+  "releaseNotes": "First Inhouse Jobs preview with search, filters, swipe discovery, local profile, saved jobs and application tracking."
+}

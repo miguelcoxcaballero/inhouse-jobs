@@ -1,0 +1,5 @@
+{
+  "lever": [],
+  "greenhouse": ["canonical", "cloudflare", "gitlab", "monzo", "wise"],
+  "ashby": ["deel", "linear", "notion", "supabase"]
+}

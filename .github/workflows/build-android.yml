@@ -1,0 +1,73 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish the APK in a GitHub Release
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies and verify web app
+        run: |
+          npm ci
+          npm test
+          npm run build
+          npx cap sync android
+
+      - name: Build installable APK
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Verify APK signature
+        run: |
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose android/app/build/outputs/apk/debug/app-debug.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk Inhouse-Jobs.apk
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Inhouse-Jobs-APK
+          path: Inhouse-Jobs.apk
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: ${{ inputs.publish_release }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v$(node -p \"require('./package.json').version\")"
+          gh release delete "$TAG" --yes --cleanup-tag=false 2>/dev/null || true
+          gh release create "$TAG" Inhouse-Jobs.apk \
+            --target "$GITHUB_SHA" \
+            --title "Inhouse Jobs ${TAG}" \
+            --notes "Installable Android beta. Search Spain, the UK and worldwide remote jobs, save or swipe through roles, and apply through the source form with local-only profile data."
