@@ -1,11 +1,12 @@
 {
   "name": "inhouse-jobs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build --base=/inhouse-jobs/",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -27,3 +27,5 @@ Candidate data never enters the GitHub job feed. Source listings retain their pr
 ## Distribution
 
 Run **Build Android APK** from the GitHub Actions tab. The workflow tests the app, builds and verifies the APK, uploads it as an artifact, and publishes `Inhouse-Jobs.apk` in the repository's Releases section.
+
+The web app is published with GitHub Pages at <https://miguelcoxcaballero.github.io/inhouse-jobs/>.

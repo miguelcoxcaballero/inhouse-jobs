@@ -44,14 +44,31 @@ jobs:
           npm run build
           npx cap sync android
 
-      - name: Build installable APK
+      - name: Check release version alignment
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; const pkg=JSON.parse(fs.readFileSync("package.json")); const update=JSON.parse(fs.readFileSync("android-update.json")); const gradle=fs.readFileSync("android/app/build.gradle","utf8"); if (pkg.version!==update.version || !gradle.includes(`versionName "${pkg.version}"`) || Number(update.versionCode)!==Number(gradle.match(/versionCode\s+(\d+)/)?.[1])) process.exit(1);'
+
+      - name: Restore permanent Inhouse Jobs signing key
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.INHOUSE_JOBS_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$KEYSTORE_BASE64"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/inhouse-jobs-release.p12"
+
+      - name: Build signed release APK
         working-directory: android
-        run: ./gradlew assembleDebug --stacktrace
+        env:
+          INHOUSE_KEYSTORE_PATH: ${{ runner.temp }}/inhouse-jobs-release.p12
+          INHOUSE_KEYSTORE_PASSWORD: ${{ secrets.INHOUSE_JOBS_KEYSTORE_PASSWORD }}
+          INHOUSE_KEY_ALIAS: ${{ secrets.INHOUSE_JOBS_KEY_ALIAS }}
+          INHOUSE_KEY_PASSWORD: ${{ secrets.INHOUSE_JOBS_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: Verify APK signature
         run: |
-          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose android/app/build/outputs/apk/debug/app-debug.apk
-          cp android/app/build/outputs/apk/debug/app-debug.apk Inhouse-Jobs.apk
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose android/app/build/outputs/apk/release/app-release.apk
+          cp android/app/build/outputs/apk/release/app-release.apk Inhouse-Jobs.apk
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
@@ -66,8 +83,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="v$(node -p \"require('./package.json').version\")"
-          gh release delete "$TAG" --yes --cleanup-tag=false 2>/dev/null || true
           gh release create "$TAG" Inhouse-Jobs.apk \
             --target "$GITHUB_SHA" \
             --title "Inhouse Jobs ${TAG}" \
-            --notes "Installable Android beta. Search Spain, the UK and worldwide remote jobs, save or swipe through roles, and apply through the source form with local-only profile data."
+            --notes "Signed Inhouse Jobs Android APK. Search Spain, the UK and worldwide remote jobs, save or swipe through roles, and apply through source forms. Candidate details and CV stay on the device."
