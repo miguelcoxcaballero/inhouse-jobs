@@ -84,7 +84,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v$(node -p \"require('./package.json').version\")"
+          VERSION=$(node --input-type=module -e 'import fs from "node:fs"; process.stdout.write(JSON.parse(fs.readFileSync("package.json", "utf8")).version)')
+          TAG="v${VERSION}"
           gh release create "$TAG" Inhouse-Jobs.apk \
             --target "$GITHUB_SHA" \
             --title "Inhouse Jobs ${TAG}" \
