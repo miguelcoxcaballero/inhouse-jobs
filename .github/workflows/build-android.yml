@@ -65,7 +65,7 @@ jobs:
           INHOUSE_KEYSTORE_PASSWORD: ${{ secrets.INHOUSE_JOBS_KEYSTORE_PASSWORD }}
           INHOUSE_KEY_ALIAS: ${{ secrets.INHOUSE_JOBS_KEY_ALIAS }}
           INHOUSE_KEY_PASSWORD: ${{ secrets.INHOUSE_JOBS_KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: bash ./gradlew assembleRelease --stacktrace
 
       - name: Verify APK signature
         run: |
