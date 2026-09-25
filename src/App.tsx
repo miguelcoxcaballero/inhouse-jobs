@@ -243,7 +243,9 @@ export default function App() {
 
   const refresh = async () => {
     setLoading(true);
-    const result = await loadJobs();
+    const result = await loadJobs(undefined, (cached) => {
+      setJobs(cached.jobs); setFeedUpdatedAt(cached.updatedAt); setFeedLive(false);
+    });
     setJobs(result.jobs); setFeedUpdatedAt(result.updatedAt); setFeedLive(result.live); setLoading(false);
   };
 
@@ -268,7 +270,18 @@ export default function App() {
       <main className="app-main">
         {tab === 'discover' && <>
           <section className="search-hero"><p className="eyebrow">{language === 'es' ? 'España · UK · remoto' : 'Spain · UK · remote'}</p><h1>{t.headline}</h1><div className="search-box"><Search /><input value={filters.query} onChange={(e) => setFilters({ ...filters, query: e.target.value })} placeholder={t.searchPlaceholder} /></div><div className="location-row"><div className="location-input"><MapPin /><input value={filters.location} onChange={(e) => setFilters({ ...filters, location: e.target.value })} placeholder={t.locationPlaceholder} /></div><button className="filter-button" onClick={() => setShowFilters(true)}><SlidersHorizontal /><span>{t.filters}</span></button></div><div className="workplace-chips">{(['all', 'remote', 'hybrid', 'onsite'] as const).map((value) => <button key={value} className={filters.workplace === value ? 'active' : ''} onClick={() => setFilters({ ...filters, workplace: value })}>{value === 'all' ? t.all : value === 'remote' ? t.remote : value === 'hybrid' ? t.hybrid : t.onsite}</button>)}</div></section>
-          <section className="results-section"><div className="section-heading"><div><h2>{visibleJobs.length} {t.results}</h2><p>{feedUpdatedAt && `${feedLive ? t.updated : t.cached} ${relativeDate(feedUpdatedAt, language)}`}</p></div><button onClick={() => setShowFilters(true)}><Filter />{t.activeFilters}</button></div>{loading ? <div className="skeleton-list">{[1,2,3].map((item) => <div className="job-skeleton" key={item} />)}</div> : visibleJobs.length ? <><div className="job-list">{visibleJobs.slice(0, visibleLimit).map((job) => <JobCard key={job.id} job={job} language={language} saved={savedIds.includes(job.id)} onSave={() => toggleSave(job.id)} onOpen={() => setSelectedJob(job)} onApply={() => prepareApply(job)} profile={profile} />)}</div>{visibleJobs.length > visibleLimit && <button className="load-more" onClick={() => setVisibleLimit((limit) => limit + 60)}>{language === 'es' ? 'Mostrar más ofertas' : 'Show more jobs'}<ChevronRight /></button>}</> : <div className="empty-state compact"><Search /><h2>{t.noJobs}</h2><button onClick={() => setFilters(DEFAULT_FILTERS)}>{t.adjust}</button></div>}</section>
+          <section className="results-section">
+            <div className="section-heading">
+              <div>
+                <h2>{loading && !jobs.length ? t.loadingJobs : `${visibleJobs.length} ${t.results}`}</h2>
+                <p>{loading && !jobs.length ? '' : feedUpdatedAt && `${feedLive ? t.updated : t.cached} ${relativeDate(feedUpdatedAt, language)}`}</p>
+              </div>
+              <button onClick={() => setShowFilters(true)}><Filter />{t.activeFilters}</button>
+            </div>
+            {loading && !jobs.length ? <div className="feed-loading" role="status"><RefreshCw /><span>{t.loadingJobsCopy}</span></div>
+              : visibleJobs.length ? <><div className="job-list">{visibleJobs.slice(0, visibleLimit).map((job) => <JobCard key={job.id} job={job} language={language} saved={savedIds.includes(job.id)} onSave={() => toggleSave(job.id)} onOpen={() => setSelectedJob(job)} onApply={() => prepareApply(job)} profile={profile} />)}</div>{visibleJobs.length > visibleLimit && <button className="load-more" onClick={() => setVisibleLimit((limit) => limit + 60)}>{language === 'es' ? 'Mostrar más ofertas' : 'Show more jobs'}<ChevronRight /></button>}</>
+                : <div className="empty-state compact"><Search /><h2>{t.noJobs}</h2><button onClick={() => setFilters(DEFAULT_FILTERS)}>{t.adjust}</button></div>}
+          </section>
         </>}
         {tab === 'swipe' && <SwipeDeck jobs={visibleJobs} language={language} savedIds={savedIds} dismissedIds={dismissedIds} profile={profile} onDecision={(job, decision) => decision === 'save' ? setSavedIds((ids) => [job.id, ...ids]) : setDismissedIds((ids) => [job.id, ...ids])} onOpen={setSelectedJob} onApply={prepareApply} />}
         {tab === 'saved' && <section className="saved-view"><div className="section-heading"><div><p className="eyebrow">{savedJobs.length} {t.results}</p><h1>{t.saved}</h1></div>{dismissedIds.length > 0 && <button onClick={() => setDismissedIds([])}><RotateCcw />{t.undo}</button>}</div>{savedJobs.length ? <div className="job-list">{savedJobs.map((job) => <JobCard key={job.id} job={job} language={language} saved onSave={() => toggleSave(job.id)} onOpen={() => setSelectedJob(job)} onApply={() => prepareApply(job)} profile={profile} />)}</div> : <div className="empty-state"><Bookmark /><h2>{language === 'es' ? 'Guarda ofertas para verlas aquí' : 'Save jobs to see them here'}</h2></div>}</section>}

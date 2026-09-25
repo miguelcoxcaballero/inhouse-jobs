@@ -1,7 +1,7 @@
 {
-  "version": "0.1.1",
-  "versionCode": 2,
+  "version": "0.1.2",
+  "versionCode": 3,
   "required": false,
   "apkUrl": "https://github.com/miguelcoxcaballero/inhouse-jobs/releases/latest/download/Inhouse-Jobs.apk",
-  "releaseNotes": "Inhouse Jobs beta with live job search, filters, swipe discovery, local profile and CV, saved jobs, and application tracking."
+  "releaseNotes": "Inhouse Jobs beta: clearer live-feed loading, job search, filters, swipe discovery, local profile and CV, saved jobs, and application tracking."
 }
