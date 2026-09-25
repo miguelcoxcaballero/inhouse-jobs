@@ -39,6 +39,12 @@ button { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid color-mix(in srgb, var(--orange) 45%, transparent); outline-offset: 2px; }
 
+.boot-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; text-align: center; color: var(--text); }
+.boot-mark { width: 54px; height: 54px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 18px; background: #fff; color: var(--orange); font-size: 2.4rem; font-weight: 700; box-shadow: var(--shadow); }
+.boot-screen h1 { margin: 0; font-family: 'Comfortaa', cursive; font-size: 1.45rem; }
+.boot-screen p { max-width: 320px; color: var(--muted); }
+.boot-screen button { border: 0; border-radius: 12px; padding: 11px 18px; background: var(--text); color: var(--bg); font-weight: 700; }
+
 .app-shell { min-height: 100vh; padding-bottom: calc(86px + env(safe-area-inset-bottom)); }
 .app-header { height: calc(66px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 18px 0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(18px); border-bottom: 1px solid color-mix(in srgb, var(--border) 78%, transparent); }
 .brand { display: flex; align-items: center; gap: 9px; font-family: 'Comfortaa', cursive; font-size: 1.08rem; font-weight: 700; letter-spacing: -0.04em; }

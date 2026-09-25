@@ -10,7 +10,35 @@
     <title>Inhouse Jobs</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main class="boot-screen" role="status" aria-live="polite">
+        <div class="boot-mark" aria-hidden="true">⌃</div>
+        <h1>inhouse jobs</h1>
+        <p id="boot-message">Cargando ofertas de empleo…</p>
+        <button id="boot-retry" type="button" hidden>Recargar</button>
+      </main>
+    </div>
+    <script>
+      (() => {
+        const showLoadError = () => {
+          const root = document.getElementById('root');
+          if (!root || root.querySelector('.app-shell')) return;
+          if (!document.getElementById('boot-message')) {
+            root.innerHTML = '<main class="boot-screen" role="status" aria-live="polite"><div class="boot-mark" aria-hidden="true">⌃</div><h1>inhouse jobs</h1><p id="boot-message"></p><button id="boot-retry" type="button">Recargar</button></main>';
+          }
+          const message = document.getElementById('boot-message');
+          const retry = document.getElementById('boot-retry');
+          if (!message || !retry) return;
+          message.textContent = 'No se pudo iniciar la página. Comprueba la conexión y vuelve a intentarlo.';
+          retry.hidden = false;
+        };
+        window.addEventListener('error', showLoadError);
+        window.addEventListener('unhandledrejection', showLoadError);
+        document.addEventListener('click', (event) => {
+          if (event.target?.id === 'boot-retry') window.location.reload();
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

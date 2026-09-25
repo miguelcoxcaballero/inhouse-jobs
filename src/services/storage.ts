@@ -30,7 +30,12 @@ export function readLocal<T>(key: string, fallback: T): T {
 }
 
 export function writeLocal<T>(key: string, value: T): void {
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Storage may be disabled (for example in strict private browsing modes).
+    // The app can still work for this session without persistence.
+  }
 }
 
 function openDb(): Promise<IDBDatabase> {
