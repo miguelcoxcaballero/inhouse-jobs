@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-14T00:20:05.171Z",
-  "count": 2878,
+  "updatedAt": "2026-10-14T06:09:21.571Z",
+  "count": 2749,
   "shards": [
     {
       "id": "es",
@@ -11,17 +11,17 @@
     {
       "id": "gb",
       "url": "gb.json",
-      "count": 252
+      "count": 224
     },
     {
       "id": "remote",
       "url": "remote.json",
-      "count": 896
+      "count": 799
     },
     {
       "id": "other",
       "url": "other.json",
-      "count": 1724
+      "count": 1720
     }
   ],
   "sources": [
@@ -33,7 +33,7 @@
     {
       "id": "arbeitnow",
       "status": "ok",
-      "count": 1443
+      "count": 1430
     },
     {
       "id": "remoteok",
@@ -42,8 +42,8 @@
     },
     {
       "id": "jobicy",
-      "status": "ok",
-      "count": 100
+      "status": "error",
+      "count": 0
     },
     {
       "id": "adzuna",
