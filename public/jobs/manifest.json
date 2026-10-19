@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-19T15:36:32.632Z",
-  "count": 2949,
+  "updatedAt": "2026-10-19T21:03:32.419Z",
+  "count": 2920,
   "shards": [
     {
       "id": "es",
@@ -11,17 +11,17 @@
     {
       "id": "gb",
       "url": "gb.json",
-      "count": 227
+      "count": 224
     },
     {
       "id": "remote",
       "url": "remote.json",
-      "count": 875
+      "count": 872
     },
     {
       "id": "other",
       "url": "other.json",
-      "count": 1843
+      "count": 1820
     }
   ],
   "sources": [
@@ -53,7 +53,7 @@
     {
       "id": "public-ats",
       "status": "ok",
-      "count": 1281
+      "count": 1280
     }
   ]
 }
